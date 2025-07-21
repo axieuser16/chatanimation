@@ -3,59 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Axie Studio Kundservice</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>🤖 Axie Studio AI-Assistent</title>
+    <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/chat-animations.css">
+    <link rel="stylesheet" href="styles/booking-popup.css">
 </head>
 <body>
-    <!-- Chat Interface -->
-    <div class="chat-container active" id="chatContainer">
-        <div class="chat-header">
-            <div class="header-content">
-                <img src="https://www.axiestudio.se/logo.jpg" alt="Axie Studio Logo" class="company-logo">
-                <div class="header-text">
-                    <h2>Axie Studio</h2>
-                    <span class="status">Online • Redo att hjälpa dig</span>
+    <div class="chatbot-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">🤖</div>
+            <div class="header-text">
+                <h1>Axie Studio AI-Assistent</h1>
+                <p class="status">🟢 Automatisk Demo Aktiv</p>
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="chat-area" id="chatArea">
+            <div class="welcome-message">
+                <p>🎯 Automatisk AI-Demo Startar</p>
+                <p>Du kommer att se olika kundscenarier som visar hur vår AI-assistent hanterar olika typer av förfrågningar.</p>
+            </div>
+        </div>
+
+        <!-- Typing Indicator -->
+        <div class="typing-indicator" id="typingIndicator" style="display: none;">
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <span class="typing-text">AI-assistenten skriver...</span>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <input type="text" id="messageInput" placeholder="Meddelande skrivs automatiskt..." readonly>
+            <button id="sendButton">🚀</button>
+        </div>
+
+        <!-- Status Controls -->
+        <div class="status-controls">
+            <span class="demo-status">Demo Status: <span class="status-active">Kör automatiskt</span></span>
+            <span class="conversation-counter" id="conversationCounter">Konversation 1/3</span>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div class="booking-modal" id="bookingModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎯 Boka Din AI-Transformation</h2>
+                <p>Upptäck hur AI kan revolutionera ditt företag på bara 30 minuter</p>
+            </div>
+
+            <div class="modal-body">
+                <!-- Progress Indicator -->
+                <div class="progress-section">
+                    <h3>📊 Bokningsprocess</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p class="progress-text" id="progressText">Steg 1 av 4: Välj datum</p>
+                </div>
+
+                <!-- Date Selection -->
+                <div class="booking-section">
+                    <h3>📅 Välj Datum för Din AI-Konsultation</h3>
+                    <p>Vi har lediga tider nästa vecka - välj det som passar dig bäst:</p>
+                    <div class="date-options" id="dateOptions">
+                        <!-- Dates will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Time Selection -->
+                <div class="booking-section">
+                    <h3>⏰ Välj Tid som Passar Dig</h3>
+                    <p>Alla tider är 30 minuter och helt kostnadsfria:</p>
+                    <div class="time-options" id="timeOptions">
+                        <div class="time-slot" data-time="09:00">
+                            <span class="time-emoji">🌅</span>
+                            <div class="time-info">
+                                <strong>09:00 - Morgonmöte</strong>
+                                <p>Perfekt för att starta dagen med AI-inspiration</p>
+                            </div>
+                        </div>
+                        <div class="time-slot" data-time="10:30">
+                            <span class="time-emoji">☕</span>
+                            <div class="time-info">
+                                <strong>10:30 - Förmiddagssamtal</strong>
+                                <p>Kaffe och AI - en perfekt kombination</p>
+                            </div>
+                        </div>
+                        <div class="time-slot" data-time="13:00">
+                            <span class="time-emoji">🍽️</span>
+                            <div class="time-info">
+                                <strong>13:00 - Lunchmöte</strong>
+                                <p>Diskutera AI över lunch</p>
+                            </div>
+                        </div>
+                        <div class="time-slot" data-time="14:30">
+                            <span class="time-emoji">🌞</span>
+                            <div class="time-info">
+                                <strong>14:30 - Eftermiddagssamtal</strong>
+                                <p>Mitt på dagen när hjärnan är skarp</p>
+                            </div>
+                        </div>
+                        <div class="time-slot" data-time="16:00">
+                            <span class="time-emoji">🌆</span>
+                            <div class="time-info">
+                                <strong>16:00 - Kvällsmöte</strong>
+                                <p>Avsluta arbetsdagen med framtidstankar</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="booking-section">
+                    <h3>📝 Dina Kontaktuppgifter</h3>
+                    <p>Vi behöver dessa uppgifter för att skicka kalenderinbjudan:</p>
+                    <div class="form-fields">
+                        <div class="form-field">
+                            <label>Namn:</label>
+                            <input type="text" id="nameField" placeholder="Ditt fullständiga namn">
+                        </div>
+                        <div class="form-field">
+                            <label>E-post:</label>
+                            <input type="email" id="emailField" placeholder="Din e-postadress för kalenderinbjudan">
+                        </div>
+                        <div class="form-field">
+                            <label>Telefon:</label>
+                            <input type="tel" id="phoneField" placeholder="Ditt telefonnummer (valfritt)">
+                        </div>
+                        <div class="form-field">
+                            <label>Företag:</label>
+                            <input type="text" id="companyField" placeholder="Ditt företags namn">
+                        </div>
+                        <div class="form-field">
+                            <label>Befattning:</label>
+                            <input type="text" id="positionField" placeholder="Din roll i företaget">
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="chat-actions">
-                <button class="action-button" title="Minimera">_</button>
-                <button class="action-button" onclick="toggleChat()">✕</button>
-            </div>
-        </div>
 
-        <div class="chat-messages" id="chatMessages">
-            <div class="typing-indicator">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-
-        <div class="chat-footer">
-            <div class="chat-input">
-                <textarea
-                    placeholder="Skriv ditt meddelande..."
-                    id="messageInput"
-                    rows="1"
-                    readonly
-                ></textarea>
-                <button class="send-button" disabled>
-                    <span>Skicka</span>
-                    <svg viewBox="0 0 24 24">
-                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                    </svg>
-                </button>
+            <div class="modal-footer">
+                <button class="book-button" id="confirmBooking">🚀 Bekräfta Min AI-Konsultation</button>
+                <div class="secondary-buttons">
+                    <button class="secondary-button" id="callInstead">📞 Ring Oss Istället</button>
+                    <button class="secondary-button" id="cancelBooking">❌ Avbryt</button>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal" style="display: none;">
+        <div class="success-content">
+            <div class="success-icon">🎉</div>
+            <h2>Fantastiskt!</h2>
+            <p class="success-name" id="successName">Tack Anna!</p>
+            <p class="success-details" id="successDetails">Din AI-konsultation är bokad</p>
+            <div class="success-info">
+                <p>📧 Kalenderinbjudan skickas inom 5 minuter</p>
+                <p>📞 Vi ringer 5 minuter före mötet</p>
+                <p>🚀 Förbered dig på en fantastisk AI-resa!</p>
+            </div>
+            <button class="success-button" id="closeSuccess">Perfekt! Stäng</button>
+        </div>
+    </div>
+
     <script src="js/chat-controller.js"></script>
-    <script>
-        function toggleChat() {
-            const container = document.getElementById('chatContainer');
-            container.classList.toggle('active');
-        }
-    </script>
+    <script src="js/booking-controller.js"></script>
+    <script src="js/paper-plane-animation.js"></script>
+    <script src="js/ending-animation.js"></script>
 </body>
 </html>
