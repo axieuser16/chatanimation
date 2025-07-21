@@ -5,34 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Axie Studio Kundservice</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/chat-animations.css">
-    <link rel="stylesheet" href="styles/booking-popup.css">
 </head>
 <body>
-    <!-- Floating Chat Button -->
-    <div class="chat-button" onclick="startDemo()" id="chatButton">
-        <svg viewBox="0 0 24 24">
-            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
-        </svg>
-    </div>
-
     <!-- Chat Interface -->
-    <div class="chat-container" id="chatContainer">
+    <div class="chat-container active" id="chatContainer">
         <div class="chat-header">
             <div class="header-content">
-                <img src="https://images.pexels.com/photos/1181533/pexels-photo-1181533.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop" alt="Axie Studio Logo" class="company-logo">
+                <img src="https://www.axiestudio.se/logo.jpg" alt="Axie Studio Logo" class="company-logo">
                 <div class="header-text">
                     <h2>Axie Studio</h2>
-                    <span class="status">Online • Redo att hjälpa</span>
+                    <span class="status">Online • Redo att hjälpa dig</span>
                 </div>
+            </div>
+            <div class="chat-actions">
+                <button class="action-button" title="Minimera">_</button>
+                <button class="action-button" onclick="toggleChat()">✕</button>
             </div>
         </div>
 
         <div class="chat-messages" id="chatMessages">
-            <div class="typing-indicator" id="typingIndicator">
+            <div class="typing-indicator">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -41,15 +34,13 @@
 
         <div class="chat-footer">
             <div class="chat-input">
-                <div class="input-wrapper">
-                    <textarea 
-                        placeholder="Väntar på svar..." 
-                        id="messageInput"
-                        rows="1"
-                        readonly
-                    ></textarea>
-                </div>
-                <button class="send-button" id="sendButton">
+                <textarea
+                    placeholder="Skriv ditt meddelande..."
+                    id="messageInput"
+                    rows="1"
+                    readonly
+                ></textarea>
+                <button class="send-button" disabled>
                     <span>Skicka</span>
                     <svg viewBox="0 0 24 24">
                         <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -59,102 +50,12 @@
         </div>
     </div>
 
-    <!-- Booking System -->
-    <div class="booking-system" id="bookingSystem">
-        <div class="booking-header">
-            <h2>Boka Din Tid</h2>
-            <p>Välj datum, tid och fyll i dina uppgifter</p>
-        </div>
-        <div class="booking-content">
-            <div class="booking-step" id="step1">
-                <div class="step-title">
-                    <div class="step-number">1</div>
-                    Välj Datum
-                </div>
-                <div class="date-grid">
-                    <div class="date-option" onclick="bookingController.selectDate(this, '2024-01-15')">
-                        <div style="font-weight: 600;">15 Jan</div>
-                        <div style="font-size: 0.9em; opacity: 0.8;">Måndag</div>
-                    </div>
-                    <div class="date-option" onclick="bookingController.selectDate(this, '2024-01-17')">
-                        <div style="font-weight: 600;">17 Jan</div>
-                        <div style="font-size: 0.9em; opacity: 0.8;">Onsdag</div>
-                    </div>
-                    <div class="date-option" onclick="bookingController.selectDate(this, '2024-01-19')">
-                        <div style="font-weight: 600;">19 Jan</div>
-                        <div style="font-size: 0.9em; opacity: 0.8;">Fredag</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="booking-step" id="step2">
-                <div class="step-title">
-                    <div class="step-number">2</div>
-                    Välj Tid
-                </div>
-                <div class="time-grid">
-                    <div class="time-option" onclick="bookingController.selectTime(this, '10:00')">10:00</div>
-                    <div class="time-option" onclick="bookingController.selectTime(this, '13:00')">13:00</div>
-                    <div class="time-option" onclick="bookingController.selectTime(this, '15:00')">15:00</div>
-                    <div class="time-option" onclick="bookingController.selectTime(this, '16:30')">16:30</div>
-                </div>
-            </div>
-
-            <div class="booking-step" id="step3">
-                <div class="step-title">
-                    <div class="step-number">3</div>
-                    Dina Uppgifter
-                </div>
-                <div class="form-group">
-                    <label for="name">Namn</label>
-                    <input type="text" id="name" placeholder="Ditt fullständiga namn">
-                </div>
-                <div class="form-group">
-                    <label for="email">E-post</label>
-                    <input type="email" id="email" placeholder="din@email.com">
-                </div>
-                <div class="form-group">
-                    <label for="phone">Telefon</label>
-                    <input type="tel" id="phone" placeholder="070-123 45 67">
-                </div>
-                <button class="confirm-button" onclick="bookingController.confirmBooking()">
-                    Bekräfta Bokning
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- JavaScript Files -->
     <script src="js/chat-controller.js"></script>
-    <script src="js/booking-controller.js"></script>
-    <script src="js/paper-plane-animation.js"></script>
-    <script src="js/ending-animation.js"></script>
-    
     <script>
-        // Initialize controllers
-        let chatController, bookingController, paperPlaneAnimation, endingAnimation;
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            chatController = new ChatController();
-            bookingController = new BookingController();
-            paperPlaneAnimation = new PaperPlaneAnimation();
-            endingAnimation = new EndingAnimation();
-            
-            // Make controllers globally accessible
-            window.chatController = chatController;
-            window.bookingController = bookingController;
-            window.paperPlaneAnimation = paperPlaneAnimation;
-            window.endingAnimation = endingAnimation;
-        });
-        
-        function startDemo() {
-            chatController.startDemo();
+        function toggleChat() {
+            const container = document.getElementById('chatContainer');
+            container.classList.toggle('active');
         }
-        
-        // Auto-start demo after page load
-        setTimeout(() => {
-            startDemo();
-        }, 2000);
     </script>
 </body>
 </html>

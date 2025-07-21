@@ -1,149 +1,144 @@
 class ChatController {
     constructor() {
-        this.chatContainer = document.getElementById('chatContainer');
-        this.chatButton = document.getElementById('chatButton');
         this.chatMessages = document.getElementById('chatMessages');
         this.messageInput = document.getElementById('messageInput');
-        this.sendButton = document.getElementById('sendButton');
-        this.typingIndicator = document.getElementById('typingIndicator');
+        this.sendButton = document.querySelector('.send-button');
+        this.typingIndicator = document.querySelector('.typing-indicator');
+        this.isProcessing = false;
         
-        this.currentStep = 0;
-        this.isWaitingForUser = false;
-        this.userMessage = '';
-        
-        this.conversation = [
-            { type: 'bot', text: 'Hej! Välkommen till Axie Studio! 👋', delay: 1000 },
-            { type: 'bot', text: 'Jag kan hjälpa dig att boka en tid för konsultation eller demo.', delay: 2000 },
-            { type: 'user', text: 'Hej! Jag skulle vilja boka en tid för en demo.', delay: 3000, waitForUser: true },
-            { type: 'bot', text: 'Perfekt! En demo är ett utmärkt sätt att se vad vi kan erbjuda.', delay: 2000 },
-            { type: 'bot', text: 'Vilken typ av tjänst är du mest intresserad av?', delay: 2000 },
-            { type: 'user', text: 'Jag är intresserad av webbutveckling och design.', delay: 3000, waitForUser: true },
-            { type: 'bot', text: 'Fantastiskt! Vi har stor expertis inom webbutveckling och modern design.', delay: 2000 },
-            { type: 'bot', text: 'Jag kommer öppna vårt bokningssystem nu så du kan välja en tid som passar dig! ✨', delay: 3000 }
+        // Demo conversation matching Python version
+        this.demoConversation = [
+            { text: "Hej! Välkommen till Axie Studio! 👋", isBot: true },
+            { text: "Vi hjälper företag med AI och chatbot-lösningar.", isBot: true },
+            { text: "Hej! Jag är intresserad av era tjänster.", isBot: false },
+            { text: "Vad bra! Jag kan hjälpa dig att boka en demo.", isBot: true },
+            { text: "Det låter perfekt! När kan vi ses?", isBot: false },
+            { text: "Vi har lediga tider nästa vecka. Passar tisdag eller onsdag?", isBot: true },
+            { text: "Tisdag skulle fungera bra!", isBot: false },
+            { text: "Utmärkt! Jag bokar in dig på tisdag kl 10:00. Du kommer få en kalenderinbjudan inom kort.", isBot: true },
+            { text: "Tack så mycket! Ser fram emot mötet.", isBot: false },
+            { text: "Tack själv! Vi ses på tisdag. Ha en fin dag! 😊", isBot: true }
         ];
         
-        this.initializeEventListeners();
+        // Start the demo automatically
+        this.startDemo();
     }
-    
-    initializeEventListeners() {
-        this.sendButton.addEventListener('click', () => this.handleSendMessage());
-        this.messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                this.handleSendMessage();
-            }
-        });
-    }
-    
-    startDemo() {
-        this.chatButton.classList.add('active');
-        this.chatContainer.classList.add('active');
-        
-        setTimeout(() => {
-            this.startConversation();
-        }, 800);
-    }
-    
-    startConversation() {
-        if (this.currentStep < this.conversation.length) {
-            const message = this.conversation[this.currentStep];
+
+    async startDemo() {
+        while (true) {
+            // Clear previous messages
+            this.chatMessages.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+            this.typingIndicator = document.querySelector('.typing-indicator');
             
-            if (message.waitForUser && message.type === 'user') {
-                this.isWaitingForUser = true;
-                this.userMessage = message.text;
-                this.messageInput.removeAttribute('readonly');
-                this.messageInput.placeholder = 'Skriv ditt meddelande...';
-                return;
-            }
-            
-            setTimeout(() => {
-                if (message.type === 'user') {
-                    this.simulateUserTyping(message.text);
+            // Run through demo conversation
+            for (const message of this.demoConversation) {
+                if (message.isBot) {
+                    // Show typing indicator for bot messages
+                    await this.showTypingIndicator();
+                    await this.delay(1500);
+                    await this.hideTypingIndicator();
                 } else {
-                    this.showBotMessage(message.text);
+                    // Simulate user typing
+                    await this.simulateUserTyping(message.text);
                 }
-            }, message.delay);
+                
+                await this.addMessage(message.text, message.isBot);
+                await this.delay(1000);
+            }
+            
+            // Pause before restarting
+            await this.delay(3000);
         }
     }
-    
-    simulateUserTyping(text) {
-        this.messageInput.value = text;
-        setTimeout(() => {
-            this.addMessage(text, false);
-            this.messageInput.value = '';
-            this.currentStep++;
-            this.startConversation();
-        }, 1500);
-    }
-    
-    showBotMessage(text) {
-        this.showTypingIndicator();
-        setTimeout(() => {
-            this.hideTypingIndicator();
-            this.addMessage(text, true);
-            this.currentStep++;
-            
-            if (this.currentStep === this.conversation.length) {
-                setTimeout(() => {
-                    window.bookingController.openBookingSystem();
-                }, 2000);
-            } else {
-                this.startConversation();
-            }
-        }, 2000);
-    }
-    
-    handleSendMessage() {
-        if (!this.isWaitingForUser) return;
-        
-        const message = this.messageInput.value.trim();
-        if (!message) return;
-        
-        this.addMessage(message, false);
+
+    async simulateUserTyping(text) {
         this.messageInput.value = '';
-        this.messageInput.setAttribute('readonly', true);
-        this.messageInput.placeholder = 'Väntar på svar...';
+        const words = text.split(' ');
         
-        this.isWaitingForUser = false;
-        this.currentStep++;
+        for (const word of words) {
+            this.messageInput.value += word + ' ';
+            await this.delay(200);
+        }
         
-        setTimeout(() => {
-            this.startConversation();
-        }, 1000);
+        // Simulate send button click
+        this.sendButton.style.transform = 'scale(1.1)';
+        await this.delay(200);
+        this.sendButton.style.transform = 'scale(0.95)';
+        await this.delay(100);
+        this.sendButton.style.transform = 'scale(1)';
+        this.messageInput.value = '';
     }
-    
-    addMessage(text, isBot = true) {
+
+    async addMessage(text, isBot) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${isBot ? 'bot-message' : 'user-message'}`;
         
-        const textNode = document.createTextNode('');
-        messageDiv.appendChild(textNode);
+        // Create message content
+        const contentSpan = document.createElement('span');
+        messageDiv.appendChild(contentSpan);
+        
+        // Add timestamp
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'message-time';
+        timeDiv.textContent = new Date().toLocaleTimeString('sv-SE', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        messageDiv.appendChild(timeDiv);
         
         this.chatMessages.appendChild(messageDiv);
         
-        let i = 0;
-        const typeWriter = () => {
-            if (i < text.length) {
-                textNode.nodeValue += text.charAt(i);
-                i++;
-                setTimeout(typeWriter, isBot ? 30 : 20);
-            }
-        };
-        typeWriter();
+        // Animate text appearance
+        await this.typeText(contentSpan, text);
+        
+        // Scroll to new message
+        this.smoothScrollToBottom();
+    }
 
-        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+    async typeText(element, text) {
+        const words = text.split(' ');
+        for (let i = 0; i < words.length; i++) {
+            const word = words[i];
+            if (i > 0) element.textContent += ' ';
+            
+            // Type each character in the word
+            for (let char of word) {
+                element.textContent += char;
+                await this.delay(30);
+            }
+        }
     }
-    
-    showTypingIndicator() {
-        this.typingIndicator.style.display = 'flex';
-        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+
+    async showTypingIndicator() {
+        this.typingIndicator.classList.add('active');
+        this.smoothScrollToBottom();
+        
+        // Animate typing dots
+        const dots = this.typingIndicator.querySelectorAll('span');
+        for (let i = 0; i < 3; i++) {
+            dots[i].style.animation = 'typingBounce 1s infinite';
+            dots[i].style.animationDelay = `${i * 0.2}s`;
+        }
     }
-    
-    hideTypingIndicator() {
-        this.typingIndicator.style.display = 'none';
+
+    async hideTypingIndicator() {
+        this.typingIndicator.classList.remove('active');
     }
-    
-    fadeOutChat() {
-        this.chatContainer.classList.add('fade-out');
+
+    smoothScrollToBottom() {
+        const target = this.chatMessages.scrollHeight - this.chatMessages.clientHeight;
+        this.chatMessages.scrollTo({
+            top: target,
+            behavior: 'smooth'
+        });
+    }
+
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 }
+
+// Initialize chat controller when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    window.chatController = new ChatController();
+});
